@@ -6,8 +6,8 @@
 %global build_wheel 1
 
 Name:           python%{python3_pkgversion}-%{rpm_name}
-Version:        0.1.0
-Release:        1.1%{?dist}
+Version:        0.2.1
+Release:        1%{?dist}
 Summary:        A cloud-init querying and repository configuration tool for Rocky Linux from CIQ Products (RLC)
 
 License:        MIT
@@ -23,8 +23,7 @@ BuildRequires:  python%{python3_pkgversion}-pip
 BuildRequires:  python%{python3_pkgversion}-wheel
 %endif
 
-Requires:       python%{python3_pkgversion}
-Requires:       python%{python3_pkgversion}-pyyaml
+Requires:       python%{python3_pkgversion}-PyYAML
 Requires:       cloud-init
 
 %description
@@ -75,5 +74,12 @@ install -Dm0644 data/ciq-mirrors.yaml %{buildroot}/usr/share/rlc-cloud-repos/ciq
 rm -f /etc/rlc-cloud-repos/.configured
 
 %changelog
+* Thu Jun 19 2025 Joseph Tate <jtate@ciq.com> - 0.2.1-1
+- Re-release to write the cloudcontentdir var instead of contentdir
+
+* Wed Jun 11 2025 Joseph Tate <jtate@ciq.com> - 0.2.0-1
+- Switch AWS repositories for bucket mirrors
+- Support AWS bucket mirrors
+
 * Mon Mar 31 2025 Joel Hanger <jhanger@ciq.com> - 0.1.0-1
 - Initial version

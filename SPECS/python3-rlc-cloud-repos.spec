@@ -6,7 +6,7 @@
 %global build_wheel 1
 
 Name:           python%{python3_pkgversion}-%{rpm_name}
-Version:        0.2.1
+Version:        0.3.1
 Release:        1%{?dist}
 Summary:        A cloud-init querying and repository configuration tool for Rocky Linux from CIQ Products (RLC)
 
@@ -47,15 +47,18 @@ Installs a utility plus cloud-init configuration to run the utility on first and
 %py3_install
 %endif
 
-rm %{buildroot}%{_prefix}/config/20_rlc-cloud-repos.cfg
-rm %{buildroot}%{_prefix}/data/ciq-mirrors.yaml
-mkdir -p %{buildroot}%{_sysconfdir}/rlc-cloud-repos
+rm -f %{buildroot}%{_prefix}/config/20_rlc-cloud-repos.cfg
+rm -f %{buildroot}%{_prefix}/data/ciq-mirrors.yaml
+rm -f %{buildroot}%{_prefix}/docs/*.template
+mkdir -p %{buildroot}%{_sysconfdir}/rlc-cloud-repos/plugins.d
+mkdir -p %{buildroot}%{_docdir}/%{name}
 install -Dm0644 config/20_rlc-cloud-repos.cfg %{buildroot}/etc/cloud/cloud.cfg.d/20_rlc-cloud-repos.cfg
 install -Dm0644 data/ciq-mirrors.yaml %{buildroot}/usr/share/rlc-cloud-repos/ciq-mirrors.yaml
+cp docs/*.template %{buildroot}%{_docdir}/%{name}/
 
 %files
 %license LICENSE
-%doc README.md
+%doc README.md CONTRIBUTING.md COMMUNITY.md SECURITY.md
 
 # CLI entrypoint (console script)
 %{_bindir}/rlc-cloud-repos
@@ -67,13 +70,22 @@ install -Dm0644 data/ciq-mirrors.yaml %{buildroot}/usr/share/rlc-cloud-repos/ciq
 
 # Config and static data
 %dir %{_sysconfdir}/rlc-cloud-repos
+%dir %{_sysconfdir}/rlc-cloud-repos/plugins.d
 %config(noreplace) %{_sysconfdir}/cloud/cloud.cfg.d/20_rlc-cloud-repos.cfg
 /usr/share/rlc-cloud-repos/ciq-mirrors.yaml
+%{_docdir}/%{name}/*.template
 
 %postun
 rm -f /etc/rlc-cloud-repos/.configured
 
 %changelog
+* Fri Oct 17 2025 Joseph Tate <jtate@ciq.com> - 0.3.1-1
+- Remove obsolete Oracle Cloud mirror from config
+
+* Thu Oct 16 2025 Joseph Tate <jtate@ciq.com> - 0.3.0-1
+- First public release
+- Add a plugin system for extending per-cloud variable settings for add-on repositories
+
 * Thu Jun 19 2025 Joseph Tate <jtate@ciq.com> - 0.2.1-1
 - Re-release to write the cloudcontentdir var instead of contentdir
 
